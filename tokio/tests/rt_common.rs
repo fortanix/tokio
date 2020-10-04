@@ -1,6 +1,6 @@
 #![allow(clippy::needless_range_loop)]
 #![warn(rust_2018_idioms)]
-#![cfg(feature = "full")]
+#![cfg(any(feature = "full", feature = "full-sgx"))]
 
 // Tests to run on both current-thread & thread-pool runtime variants.
 
@@ -55,7 +55,9 @@ fn send_sync_bound() {
 }
 
 rt_test! {
-    use tokio::net::{TcpListener, TcpStream, UdpSocket};
+    use tokio::net::{TcpListener, TcpStream};
+    #[cfg(not(target_env = "sgx"))]
+    use tokio::net::UdpSocket;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
     use tokio::runtime::Runtime;
     use tokio::sync::oneshot;
@@ -805,6 +807,7 @@ rt_test! {
         drop(rt);
     }
 
+    #[cfg(not(target_env = "sgx"))] // UDP is not supported in SGX
     #[test]
     fn io_notify_while_shutting_down() {
         use std::net::Ipv6Addr;

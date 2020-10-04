@@ -1,5 +1,5 @@
 #![warn(rust_2018_idioms)]
-#![cfg(feature = "full")]
+#![cfg(any(feature = "full", feature = "full-sgx"))]
 
 use std::io::Result;
 use std::io::{Read, Write};
@@ -33,6 +33,7 @@ async fn split() -> Result<()> {
     assert_eq!(peek_len1, peek_len2);
 
     let read_len = read_half.read(&mut read_buf[..]).await?;
+    #[cfg(not(target_env = "sgx"))] // peek always returns Ok(0) in SGX
     assert_eq!(peek_len1, read_len);
     assert_eq!(&read_buf[..read_len], MSG);
 

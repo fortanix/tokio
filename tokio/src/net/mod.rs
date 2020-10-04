@@ -24,6 +24,7 @@
 
 mod addr;
 #[cfg(feature = "net")]
+#[cfg(not(target_env = "sgx"))]
 pub(crate) use addr::to_socket_addrs;
 pub use addr::ToSocketAddrs;
 
@@ -33,10 +34,13 @@ cfg_net! {
 
     pub mod tcp;
     pub use tcp::listener::TcpListener;
+    #[cfg(not(target_env = "sgx"))]
     pub use tcp::socket::TcpSocket;
     pub use tcp::stream::TcpStream;
 
+    #[cfg(not(target_env = "sgx"))]
     mod udp;
+    #[cfg(not(target_env = "sgx"))]
     pub use udp::UdpSocket;
 }
 

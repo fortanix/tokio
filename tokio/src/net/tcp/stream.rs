@@ -2,7 +2,9 @@ use crate::future::poll_fn;
 use crate::io::{AsyncRead, AsyncWrite, Interest, PollEvented, ReadBuf, Ready};
 use crate::net::tcp::split::{split, ReadHalf, WriteHalf};
 use crate::net::tcp::split_owned::{split_owned, OwnedReadHalf, OwnedWriteHalf};
-use crate::net::{to_socket_addrs, ToSocketAddrs};
+use crate::net::ToSocketAddrs;
+#[cfg(not(target_env = "sgx"))]
+use crate::net::to_socket_addrs;
 
 use std::convert::TryFrom;
 use std::fmt;
@@ -10,6 +12,7 @@ use std::io;
 use std::net::{Shutdown, SocketAddr};
 use std::pin::Pin;
 use std::task::{Context, Poll};
+#[cfg(not(target_env = "sgx"))]
 use std::time::Duration;
 
 cfg_io_util! {
@@ -109,7 +112,10 @@ impl TcpStream {
     /// [`write_all`]: fn@crate::io::AsyncWriteExt::write_all
     /// [`AsyncWriteExt`]: trait@crate::io::AsyncWriteExt
     pub async fn connect<A: ToSocketAddrs>(addr: A) -> io::Result<TcpStream> {
-        let addrs = to_socket_addrs(addr).await?;
+        let addrs = {
+            #[cfg(not(target_env = "sgx"))] { to_socket_addrs(addr).await? }
+            #[cfg(target_env = "sgx")] { addr.to_string_addrs() }
+        };
 
         let mut last_err = None;
 
@@ -129,6 +135,14 @@ impl TcpStream {
     }
 
     /// Establishes a connection to the specified `addr`.
+    #[cfg(target_env = "sgx")]
+    async fn connect_addr(addr: String) -> io::Result<TcpStream> {
+        let sys = mio::net::TcpStream::connect_str(&addr)?;
+        TcpStream::connect_mio(sys).await
+    }
+
+    /// Establishes a connection to the specified `addr`.
+    #[cfg(not(target_env = "sgx"))]
     async fn connect_addr(addr: SocketAddr) -> io::Result<TcpStream> {
         let sys = mio::net::TcpStream::connect(addr)?;
         TcpStream::connect_mio(sys).await
@@ -226,6 +240,7 @@ impl TcpStream {
     /// [`tokio::net::TcpStream`]: TcpStream
     /// [`std::net::TcpStream`]: std::net::TcpStream
     /// [`set_nonblocking`]: fn@std::net::TcpStream::set_nonblocking
+    #[cfg(any(unix, windows))]
     pub fn into_std(self) -> io::Result<std::net::TcpStream> {
         #[cfg(unix)]
         {
@@ -1089,6 +1104,7 @@ impl TcpStream {
     /// # Ok(())
     /// # }
     /// ```
+    #[cfg(not(target_env = "sgx"))]
     pub fn linger(&self) -> io::Result<Option<Duration>> {
         let mio_socket = std::mem::ManuallyDrop::new(self.to_mio());
 
@@ -1116,12 +1132,14 @@ impl TcpStream {
     /// # Ok(())
     /// # }
     /// ```
+    #[cfg(not(target_env = "sgx"))]
     pub fn set_linger(&self, dur: Option<Duration>) -> io::Result<()> {
         let mio_socket = std::mem::ManuallyDrop::new(self.to_mio());
 
         mio_socket.set_linger(dur)
     }
 
+    #[cfg(not(target_env = "sgx"))]
     fn to_mio(&self) -> mio::net::TcpSocket {
         #[cfg(windows)]
         {

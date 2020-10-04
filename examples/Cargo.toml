@@ -24,6 +24,12 @@ httpdate = "1.0"
 once_cell = "1.5.2"
 rand = "0.8.3"
 
+[target.'cfg(not(target_env = "sgx"))'.dev-dependencies]
+tokio = { version = "1.0.0", path = "../tokio",features = ["full", "tracing"] }
+
+[target.'cfg(target_env = "sgx")'.dev-dependencies]
+tokio = { version = "1.0.0", path = "../tokio",features = ["full-sgx", "tracing"] }
+
 [target.'cfg(windows)'.dev-dependencies.winapi]
 version = "0.3.8"
 

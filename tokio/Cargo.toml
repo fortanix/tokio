@@ -41,6 +41,18 @@ full = [
   "time",
 ]
 
+# everything possible in SGX
+full-sgx = [
+  "io-util",
+  "io-std",
+  "macros",
+  "net",
+  "rt",
+  "rt-multi-thread",
+  "sync",
+  "time",
+]
+
 fs = []
 io-util = ["memchr", "bytes"]
 # stdin, stdout, stderr
@@ -130,10 +142,10 @@ futures = { version = "0.3.0", features = ["async-await"] }
 mockall = "0.10.2"
 tempfile = "3.1.0"
 async-stream = "0.3"
+rand = "0.8.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 proptest = "1"
-rand = "0.8.0"
 socket2 = "0.4"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
@@ -141,6 +153,10 @@ wasm-bindgen-test = "0.3.0"
 
 [target.'cfg(target_os = "freebsd")'.dev-dependencies]
 mio-aio = { version = "0.6.0", features = ["tokio"] }
+
+[target.'cfg(not(target_env = "sgx"))'.dev-dependencies]
+socket2 = "0.4"
+proptest = "1"
 
 [target.'cfg(loom)'.dev-dependencies]
 loom = { version = "0.5", features = ["futures", "checkpoint"] }
@@ -155,3 +171,7 @@ rustc-args = ["--cfg", "tokio_unstable"]
 
 [package.metadata.playground]
 features = ["full", "test-util"]
+
+# set number of threads so tests can run properly
+[package.metadata.fortanix-sgx]
+threads=100

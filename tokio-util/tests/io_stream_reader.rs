@@ -1,4 +1,5 @@
 #![warn(rust_2018_idioms)]
+#![cfg(any(feature = "full", feature = "full-sgx"))]
 
 use bytes::Bytes;
 use tokio::io::AsyncReadExt;

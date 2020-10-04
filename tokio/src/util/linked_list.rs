@@ -614,7 +614,7 @@ mod tests {
         }
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(not(any(target_arch = "wasm32", target_env = "sgx")))]
     proptest::proptest! {
         #[test]
         fn fuzz_linked_list(ops: Vec<usize>) {
