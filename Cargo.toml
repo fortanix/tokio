@@ -2,6 +2,7 @@
 resolver = "2"
 
 members = [
+  "runner",
   "tokio",
   "tokio-macros",
   "tokio-test",
@@ -18,3 +19,7 @@ members = [
 
 [patch.crates-io]
 mio = { git = "https://github.com/mzohreva/mio", branch = "mz/sgx-port-0.7.6" }
+enclave-runner = { git = "https://github.com/fortanix/rust-sgx", branch = "mz/async-usercalls" }
+sgxs = { git = "https://github.com/fortanix/rust-sgx", branch = "mz/async-usercalls" }
+sgx-isa = { git = "https://github.com/fortanix/rust-sgx", branch = "mz/async-usercalls" }
+sgxs-loaders = { git = "https://github.com/fortanix/rust-sgx", branch = "mz/async-usercalls" }

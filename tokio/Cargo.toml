@@ -175,3 +175,4 @@ features = ["full", "test-util"]
 # set number of threads so tests can run properly
 [package.metadata.fortanix-sgx]
 threads=100
+runner = "runner"
