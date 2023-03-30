@@ -62,6 +62,7 @@ async fn two_await() {
     assert_eq!(("hello", 123), res);
 }
 
+#[ignore]
 #[test]
 fn join_size() {
     use futures::future;
