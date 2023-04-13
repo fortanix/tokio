@@ -325,6 +325,7 @@ fn one_ready_many_none() {
     }
 }
 
+#[cfg(not(target_env = "sgx"))] // proptest does not compile in SGX
 proptest::proptest! {
     #[test]
     fn fuzz_pending_complete_mix(kinds: Vec<bool>) {

@@ -2,6 +2,7 @@
 
 pub(crate) mod listener;
 
+#[cfg(not(target_env = "sgx"))]
 pub(crate) mod socket;
 
 mod split;

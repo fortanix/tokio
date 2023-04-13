@@ -22,7 +22,7 @@ mod sys {
     }
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_env = "sgx"))]
 mod sys {
     use mio::Ready;
 

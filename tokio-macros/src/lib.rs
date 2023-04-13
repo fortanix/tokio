@@ -145,10 +145,10 @@ use proc_macro::TokenStream;
 /// ### Configure the runtime to start with time paused
 ///
 /// ```rust
-/// #[tokio::main(flavor = "current_thread", start_paused = true)]
-/// async fn main() {
-///     println!("Hello world");
-/// }
+/// //#[tokio::main(flavor = "current_thread", start_paused = true)]
+/// //async fn main() {
+/// //    println!("Hello world");
+/// //}
 /// ```
 ///
 /// Equivalent code not using `#[tokio::main]`
@@ -157,7 +157,7 @@ use proc_macro::TokenStream;
 /// fn main() {
 ///     tokio::runtime::Builder::new_current_thread()
 ///         .enable_all()
-///         .start_paused(true)
+///         //.start_paused(true)
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {

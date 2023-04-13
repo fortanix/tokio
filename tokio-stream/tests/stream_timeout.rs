@@ -1,4 +1,4 @@
-#![cfg(feature = "full")]
+#![cfg(any(feature = "full", feature = "full-sgx"))]
 
 use tokio::time::{self, sleep, Duration};
 use tokio_stream::{self, StreamExt};
