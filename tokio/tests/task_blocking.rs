@@ -1,5 +1,5 @@
 #![warn(rust_2018_idioms)]
-#![cfg(all(feature = "full", not(target_os = "wasi")))] // Wasi doesn't support threads
+#![cfg(all(any(feature = "full", feature = "full-sgx"), not(target_os = "wasi")))] // Wasi doesn't support threads
 
 use tokio::{runtime, task, time};
 use tokio_test::assert_ok;

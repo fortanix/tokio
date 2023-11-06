@@ -152,6 +152,9 @@ use proc_macro::TokenStream;
 /// ### Configure the runtime to start with time paused
 ///
 /// ```rust
+/// # #[cfg(not(feature = "test-util"))]
+/// # fn main(){}
+/// # #[cfg(feature = "test-util")]
 /// #[tokio::main(flavor = "current_thread", start_paused = true)]
 /// async fn main() {
 ///     println!("Hello world");
@@ -162,6 +165,7 @@ use proc_macro::TokenStream;
 ///
 /// ```rust
 /// fn main() {
+///     # #[cfg(feature = "test-util")]
 ///     tokio::runtime::Builder::new_current_thread()
 ///         .enable_all()
 ///         .start_paused(true)

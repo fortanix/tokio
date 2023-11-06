@@ -41,6 +41,18 @@ full = [
   "time",
 ]
 
+# everything possible in SGX
+full-sgx = [
+  "io-util",
+  "io-std",
+  "macros",
+  "net",
+  "rt",
+  "rt-multi-thread",
+  "sync",
+  "time",
+]
+
 fs = []
 io-util = ["bytes"]
 # stdin, stdout, stderr
@@ -99,7 +111,7 @@ mio = { version = "0.8.6", optional = true, default-features = false }
 num_cpus = { version = "1.8.0", optional = true }
 parking_lot = { version = "0.12.0", optional = true }
 
-[target.'cfg(not(target_family = "wasm"))'.dependencies]
+[target.'cfg(not(any(target_family = "wasm", target_env = "sgx")))'.dependencies]
 socket2 = { version = "0.5.3", optional = true, features = [ "all" ] }
 
 # Currently unstable. The API exposed by these features may be broken at any time.
@@ -138,7 +150,7 @@ futures = { version = "0.3.0", features = ["async-await"] }
 mockall = "0.11.1"
 async-stream = "0.3"
 
-[target.'cfg(not(target_family = "wasm"))'.dev-dependencies]
+[target.'cfg(not(any(target_family = "wasm", target_env = "sgx")))'.dev-dependencies]
 socket2 = "0.5.3"
 tempfile = "3.1.0"
 
@@ -164,3 +176,10 @@ rustc-args = ["--cfg", "tokio_unstable", "--cfg", "tokio_taskdump"]
 
 [package.metadata.playground]
 features = ["full", "test-util"]
+
+# set number of threads so tests can run properly
+[package.metadata.fortanix-sgx]
+threads=100
+heap-size=0x4000000
+stack-size=0x40000
+runner = "enclave-runner"

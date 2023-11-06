@@ -3,6 +3,7 @@
 pub(crate) mod listener;
 
 cfg_not_wasi! {
+    #[cfg(not(target_env = "sgx"))]
     pub(crate) mod socket;
 }
 

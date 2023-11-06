@@ -1,6 +1,9 @@
 cfg_not_wasi! {
     use crate::future::poll_fn;
-    use crate::net::{to_socket_addrs, ToSocketAddrs};
+    use crate::net::ToSocketAddrs;
+    #[cfg(not(target_env = "sgx"))]
+    use crate::net::to_socket_addrs;
+    #[cfg(not(target_env = "sgx"))]
     use std::time::Duration;
 }
 
@@ -112,7 +115,10 @@ impl TcpStream {
         /// [`write_all`]: fn@crate::io::AsyncWriteExt::write_all
         /// [`AsyncWriteExt`]: trait@crate::io::AsyncWriteExt
         pub async fn connect<A: ToSocketAddrs>(addr: A) -> io::Result<TcpStream> {
-            let addrs = to_socket_addrs(addr).await?;
+            let addrs = {
+                #[cfg(not(target_env = "sgx"))] { to_socket_addrs(addr).await? }
+                #[cfg(target_env = "sgx")] { addr.to_string_addrs() }
+            };
 
             let mut last_err = None;
 
@@ -132,8 +138,16 @@ impl TcpStream {
         }
 
         /// Establishes a connection to the specified `addr`.
+        #[cfg(not(target_env = "sgx"))]
         async fn connect_addr(addr: SocketAddr) -> io::Result<TcpStream> {
             let sys = mio::net::TcpStream::connect(addr)?;
+            TcpStream::connect_mio(sys).await
+        }
+
+        /// Establishes a connection to the specified `addr`.
+        #[cfg(target_env = "sgx")]
+        async fn connect_addr(addr: String) -> io::Result<TcpStream> {
+            let sys = mio::net::TcpStream::connect_str(&addr)?;
             TcpStream::connect_mio(sys).await
         }
 
@@ -239,6 +253,7 @@ impl TcpStream {
     /// [`tokio::net::TcpStream`]: TcpStream
     /// [`std::net::TcpStream`]: std::net::TcpStream
     /// [`set_nonblocking`]: fn@std::net::TcpStream::set_nonblocking
+    #[cfg(not(target_env = "sgx"))] // `TcpStream::into_raw_fd()` not support by `mio` for SGX platform
     pub fn into_std(self) -> io::Result<std::net::TcpStream> {
         #[cfg(unix)]
         {
@@ -1150,6 +1165,7 @@ impl TcpStream {
         self.io.set_nodelay(nodelay)
     }
 
+    #[cfg(not(target_env = "sgx"))]
     cfg_not_wasi! {
         /// Reads the linger duration for this socket by getting the `SO_LINGER`
         /// option.
