@@ -1,5 +1,5 @@
 #![warn(rust_2018_idioms)]
-#![cfg(feature = "full")]
+#![cfg(any(feature = "full", feature = "full-sgx"))]
 #![allow(clippy::type_complexity, clippy::diverging_sub_expression)]
 
 use std::cell::Cell;
@@ -151,6 +151,7 @@ const _: fn() = || {
     AmbiguousIfUnpin::some_item(&f);
 };
 
+#[cfg(not(target_env = "sgx"))]
 cfg_not_wasi! {
     mod fs {
         use super::*;
@@ -197,6 +198,7 @@ cfg_not_wasi! {
 }
 
 cfg_not_wasi! {
+    #[cfg(not(target_env = "sgx"))]
     assert_value!(tokio::net::TcpSocket: Send & Sync & Unpin);
     async_assert_fn!(tokio::net::TcpListener::bind(SocketAddr): Send & Sync & !Unpin);
     async_assert_fn!(tokio::net::TcpStream::connect(SocketAddr): Send & Sync & !Unpin);
@@ -215,7 +217,8 @@ async_assert_fn!(tokio::net::TcpStream::readable(_): Send & Sync & !Unpin);
 async_assert_fn!(tokio::net::TcpStream::ready(_, tokio::io::Interest): Send & Sync & !Unpin);
 async_assert_fn!(tokio::net::TcpStream::writable(_): Send & Sync & !Unpin);
 
-// Wasi does not support UDP
+// Wasi and SGX do not support UDP
+#[cfg(not(target_env = "sgx"))]
 cfg_not_wasi! {
     mod udp_socket {
         use super::*;
@@ -296,6 +299,7 @@ mod windows_named_pipe {
     async_assert_fn!(NamedPipeServer::writable(_): Send & Sync & !Unpin);
 }
 
+#[cfg(not(target_env = "sgx"))]
 cfg_not_wasi! {
     mod test_process {
         use super::*;

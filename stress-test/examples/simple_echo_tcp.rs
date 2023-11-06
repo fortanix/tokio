@@ -3,7 +3,7 @@ use std::{thread::sleep, time::Duration};
 
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
-    net::{TcpListener, TcpSocket},
+    net::{TcpListener, TcpStream},
     runtime::Builder,
     sync::oneshot,
 };
@@ -30,9 +30,7 @@ fn main() {
     let (tx, mut rx) = oneshot::channel();
 
     rt2.spawn(async {
-        let addr = TCP_ENDPOINT.parse().unwrap();
-        let socket = TcpSocket::new_v4().unwrap();
-        let mut stream = socket.connect(addr).await.unwrap();
+        let mut stream = TcpStream::connect(TCP_ENDPOINT).await.unwrap();
 
         let mut buff = [0; MSG_SIZE];
         for _ in 0..NUM_MSGS {

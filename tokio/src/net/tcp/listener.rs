@@ -2,7 +2,9 @@ use crate::io::{Interest, PollEvented};
 use crate::net::tcp::TcpStream;
 
 cfg_not_wasi! {
-    use crate::net::{to_socket_addrs, ToSocketAddrs};
+    #[cfg(not(target_env = "sgx"))]
+    use crate::net::to_socket_addrs;
+    use crate::net::ToSocketAddrs;
 }
 
 use std::fmt;
@@ -98,7 +100,10 @@ impl TcpListener {
         /// }
         /// ```
         pub async fn bind<A: ToSocketAddrs>(addr: A) -> io::Result<TcpListener> {
-            let addrs = to_socket_addrs(addr).await?;
+            let addrs = {
+                #[cfg(not(target_env = "sgx"))] { to_socket_addrs(addr).await? }
+                #[cfg(target_env = "sgx")] { addr.to_string_addrs() }
+            };
 
             let mut last_err = None;
 
@@ -117,6 +122,13 @@ impl TcpListener {
             }))
         }
 
+        #[cfg(target_env = "sgx")]
+        fn bind_addr(addr: String) -> io::Result<TcpListener> {
+            let listener = mio::net::TcpListener::bind_str(&addr)?;
+            TcpListener::new(listener)
+        }
+
+        #[cfg(not(target_env = "sgx"))]
         fn bind_addr(addr: SocketAddr) -> io::Result<TcpListener> {
             let listener = mio::net::TcpListener::bind(addr)?;
             TcpListener::new(listener)
@@ -262,10 +274,13 @@ impl TcpListener {
     /// [`tokio::net::TcpListener`]: TcpListener
     /// [`std::net::TcpListener`]: std::net::TcpListener
     /// [`set_nonblocking`]: fn@std::net::TcpListener::set_nonblocking
+    #[cfg(not(target_env = "sgx"))] // `TcpListener::into_raw_fd()` not support by `mio` for SGX platform
     pub fn into_std(self) -> io::Result<std::net::TcpListener> {
         #[cfg(unix)]
         {
+            #[cfg(unix)]
             use std::os::unix::io::{FromRawFd, IntoRawFd};
+
             self.io
                 .into_inner()
                 .map(IntoRawFd::into_raw_fd)

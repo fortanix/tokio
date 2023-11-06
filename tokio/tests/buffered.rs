@@ -1,5 +1,5 @@
 #![warn(rust_2018_idioms)]
-#![cfg(all(feature = "full", not(target_os = "wasi")))] // Wasi does not support bind()
+#![cfg(all(any(feature = "full", feature = "full-sgx"), not(target_os = "wasi")))] // Wasi does not support bind()
 
 use tokio::net::TcpListener;
 use tokio_test::assert_ok;

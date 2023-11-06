@@ -1,5 +1,5 @@
 #![cfg(all(feature = "compat"))]
-#![cfg(not(target_os = "wasi"))] // WASI does not support all fs operations
+#![cfg(not(any(target_os = "wasi", target_env = "sgx")))] // WASI and SGX do not support all fs operations
 #![warn(rust_2018_idioms)]
 
 use futures_io::SeekFrom;
