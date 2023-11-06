@@ -27,6 +27,12 @@ rand = "0.8.3"
 [target.'cfg(windows)'.dev-dependencies.windows-sys]
 version = "0.48"
 
+[target.'cfg(not(target_env = "sgx"))'.dev-dependencies]
+tokio = { version = "1.0.0", path = "../tokio",features = ["full", "tracing"] }
+
+[target.'cfg(target_env = "sgx")'.dev-dependencies]
+tokio = { version = "1.0.0", path = "../tokio",features = ["full-sgx", "tracing"] }
+
 [[example]]
 name = "chat"
 path = "chat.rs"

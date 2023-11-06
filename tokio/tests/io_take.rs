@@ -1,5 +1,5 @@
 #![warn(rust_2018_idioms)]
-#![cfg(all(feature = "full", not(target_os = "wasi")))] // Wasi does not support panic recovery
+#![cfg(all(any(feature = "full", feature = "full-sgx"), not(target_os = "wasi")))] // Wasi does not support panic recovery
 
 use std::pin::Pin;
 use std::task::{Context, Poll};
