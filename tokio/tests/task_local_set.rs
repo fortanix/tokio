@@ -307,7 +307,6 @@ fn join_local_future_elsewhere() {
 }
 
 // Tests for <https://github.com/tokio-rs/tokio/issues/4973>
-#[cfg(not(target_env = "sgx"))] // Fails on SGX!
 #[cfg(not(target_os = "wasi"))] // Wasi doesn't support threads
 #[tokio::test(flavor = "multi_thread")]
 async fn localset_in_thread_local() {
@@ -596,7 +595,6 @@ async fn sleep_with_local_enter_guard() {
 }
 
 #[test]
-#[cfg(not(target_env = "sgx"))] // Fails on SGX!
 fn store_local_set_in_thread_local_with_runtime() {
     use tokio::runtime::Runtime;
 

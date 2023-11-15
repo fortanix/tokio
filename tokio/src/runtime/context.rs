@@ -138,6 +138,13 @@ pub(super) fn budget<R>(f: impl FnOnce(&Cell<coop::Budget>) -> R) -> Result<R, A
 cfg_rt! {
     use crate::runtime::ThreadId;
 
+    #[cfg(target_env = "sgx")]
+    pub(crate) fn has_thread_id() -> bool {
+        CONTEXT.try_with(|ctx| {
+            ctx.thread_id.get().is_some()
+        }).unwrap_or(false)
+    }
+
     pub(crate) fn thread_id() -> Result<ThreadId, AccessError> {
         CONTEXT.try_with(|ctx| {
             match ctx.thread_id.get() {
