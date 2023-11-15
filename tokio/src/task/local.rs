@@ -1143,6 +1143,14 @@ impl LocalState {
 
     #[track_caller]
     fn assert_called_from_owner_thread(&self) {
+        // Even when the thread is being destroyed, local data may still be initialized on the SGX
+        // platform. So calling `context::thread_id()` will always return a thread id. In line with
+        // the `debug_assert` below, we ignore such cases on the SGX platform.
+        #[cfg(target_env = "sgx")]
+        if !context::has_thread_id() {
+            return;
+        }
+
         // FreeBSD has some weirdness around thread-local destruction.
         // TODO: remove this hack when thread id is cleaned up
         #[cfg(not(any(target_os = "openbsd", target_os = "freebsd")))]
