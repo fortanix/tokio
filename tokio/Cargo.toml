@@ -179,7 +179,7 @@ features = ["full", "test-util"]
 
 # set number of threads so tests can run properly
 [package.metadata.fortanix-sgx]
-threads=100
-heap-size=0x4000000
-stack-size=0x40000
+threads = 100
+heap-size = 0x4000000
+stack-size = 0x40000
 runner = "enclave-runner"

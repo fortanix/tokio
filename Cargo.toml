@@ -17,8 +17,8 @@ members = [
 ]
 
 [patch.crates-io]
-mio = { git = "https://github.com/vn971/mio", branch = "raoul/sgx-port-0.8.9" }
-enclave-runner = { git = "https://github.com/vn971/rust-sgx", branch = "vas/async-usercalls-scratch" }
-sgxs = { git = "https://github.com/vn971/rust-sgx", branch = "vas/async-usercalls-scratch" }
-sgx-isa = { git = "https://github.com/vn971/rust-sgx", branch = "vas/async-usercalls-scratch" }
-sgxs-loaders = { git = "https://github.com/vn971/rust-sgx", branch = "vas/async-usercalls-scratch" }
+mio = { git = "https://github.com/fortanix/mio", branch = "raoul/sgx-port-0.8.9" }
+enclave-runner = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
+sgxs = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
+sgx-isa = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
+sgxs-loaders = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
