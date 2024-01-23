@@ -17,8 +17,9 @@ members = [
 ]
 
 [patch.crates-io]
+aesm-client = { git = "https://github.com/fortanix/rust-sgx", branch = "raoul/gh-557-update_tokio" }
 mio = { git = "https://github.com/fortanix/mio", branch = "raoul/sgx-port-0.8.9" }
-enclave-runner = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
-sgxs = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
-sgx-isa = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
-sgxs-loaders = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
+enclave-runner = { git = "https://github.com/fortanix/rust-sgx", branch = "raoul/gh-557-update_tokio" }
+sgxs = { git = "https://github.com/fortanix/rust-sgx", branch = "raoul/gh-557-update_tokio" }
+sgx-isa = { git = "https://github.com/fortanix/rust-sgx", branch = "raoul/gh-557-update_tokio" }
+sgxs-loaders = { git = "https://github.com/fortanix/rust-sgx", branch = "raoul/gh-557-update_tokio" }
