@@ -5,6 +5,6 @@ edition = "2018"
 
 [dependencies]
 aesm-client = { version = "0.5", features = ["sgxs"] }
-clap = "2.0"
+clap = "4.4"
 enclave-runner = "0.6"
 sgxs-loaders = "0.3.0"

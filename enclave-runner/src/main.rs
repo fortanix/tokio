@@ -1,5 +1,5 @@
 use aesm_client::AesmClient;
-use clap::{App, Arg};
+use clap::{Command, Arg, ArgAction};
 use enclave_runner::EnclaveBuilder;
 
 #[cfg(windows)]
@@ -8,20 +8,20 @@ use sgxs_loaders::enclaveapi::Sgx as IsgxDevice;
 use sgxs_loaders::isgx::Device as IsgxDevice;
 
 fn main() {
-    let args = App::new("runner")
-        .arg(Arg::with_name("file").required(true))
+    let args = Command::new("runner")
+        .arg(Arg::new("file").required(true))
         .arg(
-            Arg::with_name("enclave-args")
-                .long_help(
+            Arg::new("enclave-args")
+                .help(
                     "Arguments passed to the enclave. \
                     Note that this is not an appropriate channel for passing \
                     secrets or security configurations to the enclave.",
                 )
-                .multiple(true),
+                .action(ArgAction::Append)
         )
         .get_matches();
 
-    let file = args.value_of("file").unwrap();
+    let file = args.get_one::<String>("file").unwrap();
 
     let mut device = IsgxDevice::new()
         .expect("failed to open SGX device")
@@ -33,7 +33,7 @@ fn main() {
         enclave_builder.dummy_signature();
     }
 
-    if let Some(enclave_args) = args.values_of("enclave-args") {
+    if let Some(enclave_args) = args.get_many::<String>("enclave-args") {
         enclave_builder.args(enclave_args);
     }
 
