@@ -1,5 +1,5 @@
 #![warn(rust_2018_idioms)]
-#![cfg(all(feature = "full", not(target_os = "wasi")))] // Wasi doesn't support bind
+#![cfg(all(any(feature = "full", feature = "full-sgx"), not(target_os = "wasi")))] // Wasi doesn't support bind
 
 use std::io::{Error, ErrorKind, Result};
 use std::io::{Read, Write};
@@ -44,6 +44,7 @@ async fn split() -> Result<()> {
             assert_eq!(peek_len1, peek_len2);
 
             let read_len = read_half.read(&mut read_buf[..]).await?;
+            #[cfg(not(target_env = "sgx"))] // peek always returns Ok(0) in SGX
             assert_eq!(peek_len1, read_len);
             assert_eq!(&read_buf[..read_len], MSG);
             Ok(())
@@ -81,6 +82,7 @@ async fn reunite() -> Result<()> {
 }
 
 /// Test that dropping the write half actually closes the stream.
+#[cfg_attr(target_env = "sgx", ignore = "Shutdown is ineffective on SGX platform")]
 #[tokio::test]
 async fn drop_write() -> Result<()> {
     const MSG: &[u8] = b"split";

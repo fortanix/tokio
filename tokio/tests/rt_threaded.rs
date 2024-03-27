@@ -1,5 +1,5 @@
 #![warn(rust_2018_idioms)]
-#![cfg(all(feature = "full", not(target_os = "wasi")))]
+#![cfg(all(any(feature = "full", feature = "full-sgx"), not(target_os = "wasi")))]
 
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
@@ -622,6 +622,7 @@ fn test_nested_block_in_place_with_block_on_between() {
 // is sufficient. If there is a regression, this test will hang. In theory, we
 // could add limits, but that would be likely to fail on CI.
 #[test]
+#[cfg(not(target_env = "sgx"))] // Test freezes on SGX
 #[cfg(not(tokio_no_tuning_tests))]
 fn test_tuning() {
     use std::sync::atomic::AtomicBool;

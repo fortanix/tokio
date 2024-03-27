@@ -131,6 +131,7 @@ impl<E: Source> PollEvented<E> {
 
     /// Deregisters the inner io from the registration and returns a Result containing the inner io.
     #[cfg(any(feature = "net", feature = "process"))]
+    #[cfg(not(target_env = "sgx"))]
     pub(crate) fn into_inner(mut self) -> io::Result<E> {
         let mut inner = self.io.take().unwrap(); // As io shouldn't ever be None, just unwrap here.
         self.registration.deregister(&mut inner)?;

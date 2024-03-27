@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "enclave-runner",
   "tokio",
   "tokio-macros",
   "tokio-test",
@@ -18,3 +19,10 @@ members = [
 [workspace.metadata.spellcheck]
 config = "spellcheck.toml"
 
+[patch.crates-io]
+async-usercalls = { git = "https://github.com/fortanix/rust-sgx.git", branch = "master" }
+enclave-runner = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
+mio = { git = "https://github.com/fortanix/mio", branch = "v0.8.10" }
+sgx-isa = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
+sgxs = { git = "https://github.com/fortanix/rust-sgx", branch = "master" }
+tokio = { path = "./tokio" }

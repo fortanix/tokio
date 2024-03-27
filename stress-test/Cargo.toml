@@ -8,7 +8,12 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
 tokio = { path = "../tokio/", features = ["full"] }
+
+[target.'cfg(target_env = "sgx")'.dependencies]
+tokio = { path = "../tokio/", features = ["full-sgx"] }
 
 [dev-dependencies]
 rand = "0.8"

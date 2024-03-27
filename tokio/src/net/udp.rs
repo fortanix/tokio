@@ -1978,8 +1978,12 @@ impl UdpSocket {
     /// #[tokio::main]
     /// async fn main() -> io::Result<()> {
     ///     // Create a socket
+    ///     #[cfg(target_env = "sgx")]
+    ///     assert!(UdpSocket::bind("0.0.0.0:8080").await.is_err());
+    ///     #[cfg(not(target_env = "sgx"))]
     ///     let socket = UdpSocket::bind("0.0.0.0:8080").await?;
     ///
+    ///     #[cfg(not(target_env = "sgx"))]
     ///     if let Ok(Some(err)) = socket.take_error() {
     ///         println!("Got error: {:?}", err);
     ///     }

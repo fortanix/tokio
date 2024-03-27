@@ -131,6 +131,7 @@ pub(crate) enum Mandatory {
     NonMandatory,
 }
 
+#[derive(Debug)]
 pub(crate) enum SpawnError {
     /// Pool is shutting down and the task was not scheduled
     ShuttingDown,
