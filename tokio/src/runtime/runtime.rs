@@ -468,7 +468,9 @@ impl Drop for Runtime {
             Scheduler::MultiThread(multi_thread) => {
                 // The threaded scheduler drops its tasks on its worker threads, which is
                 // already in the runtime's context.
+                eprintln!("Preparing to drop runtime");
                 multi_thread.shutdown(&self.handle.inner);
+                eprintln!("Done with runtime dropping preparation");
             }
             #[cfg(all(tokio_unstable, feature = "rt-multi-thread", not(target_os = "wasi")))]
             Scheduler::MultiThreadAlt(multi_thread) => {

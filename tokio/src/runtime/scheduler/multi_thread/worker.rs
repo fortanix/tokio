@@ -1097,12 +1097,15 @@ impl Handle {
     }
 
     pub(super) fn close(&self) {
+        eprintln!("Closing inject queue");
         if self
             .shared
             .inject
             .close(&mut self.shared.synced.lock().inject)
         {
+            eprintln!("Unparking all workers");
             self.notify_all();
+            eprintln!("All workers unparked");
         }
     }
 

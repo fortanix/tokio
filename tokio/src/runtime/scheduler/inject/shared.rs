@@ -70,6 +70,7 @@ impl<T: 'static> Shared<T> {
     /// Must be called with the same `Synced` instance returned by `Inject::new`
     pub(crate) unsafe fn push(&self, synced: &mut Synced, task: task::Notified<T>) {
         if synced.is_closed {
+            eprintln!("Rejecting inject queue push because queue is closed.");
             return;
         }
 
