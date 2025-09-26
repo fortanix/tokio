@@ -507,6 +507,7 @@ impl Inner {
         let mut join_on_thread = None;
 
         'main: loop {
+            eprintln!("In blocking pool worker thread");
             // BUSY
             while let Some(task) = shared.queue.pop_front() {
                 self.metrics.dec_queue_depth();
@@ -520,6 +521,7 @@ impl Inner {
             self.metrics.inc_num_idle_threads();
 
             while !shared.shutdown {
+                eprintln!("About to call self.condvar.wait_timeout()");
                 let lock_result = self.condvar.wait_timeout(shared, self.keep_alive).unwrap();
 
                 shared = lock_result.0;
