@@ -523,6 +523,7 @@ impl Inner {
             while !shared.shutdown {
                 eprintln!("About to call self.condvar.wait_timeout()");
                 let lock_result = self.condvar.wait_timeout(shared, self.keep_alive).unwrap();
+                eprintln!("FINISHED calling self.condvar.wait_timeout()");
 
                 shared = lock_result.0;
                 let timeout_result = lock_result.1;
