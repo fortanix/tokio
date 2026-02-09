@@ -38,12 +38,12 @@ cfg_net! {
     pub use tcp::listener::TcpListener;
     pub use tcp::stream::TcpStream;
     cfg_not_wasi! {
-        #[cfg(not(target_env = "sgx"))]
+        #[cfg(not(any(target_env = "sgx", target_env = "fortanixvme")))]
         pub use tcp::socket::TcpSocket;
 
-        #[cfg(not(target_env = "sgx"))]
+        #[cfg(not(any(target_env = "sgx", target_env = "fortanixvme")))]
         mod udp;
-        #[cfg(not(target_env = "sgx"))]
+        #[cfg(not(any(target_env = "sgx", target_env = "fortanixvme")))]
         pub use udp::UdpSocket;
     }
 }

@@ -3,7 +3,7 @@
 pub(crate) mod listener;
 
 cfg_not_wasi! {
-    #[cfg(not(target_env = "sgx"))]
+    #[cfg(not(any(target_env = "sgx", target_env = "fortanixvme")))]
     pub(crate) mod socket;
 }
 
