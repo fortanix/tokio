@@ -1169,7 +1169,7 @@ impl TcpStream {
         self.io.set_nodelay(nodelay)
     }
 
-    #[cfg(not(target_env = "sgx"))]
+    #[cfg(not(any(target_env = "sgx", target_env = "fortanixvme")))]
     cfg_not_wasi! {
         /// Reads the linger duration for this socket by getting the `SO_LINGER`
         /// option.
